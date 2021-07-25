@@ -6,8 +6,8 @@ class CocktailManager {
   String alcoholic;
   String glassType;
   String pictureUrl;
-  List<Ingredient> ingredients;
   String instructions;
+  List<Ingredient> ingredients;
 
   CocktailManager(
       {this.name,
@@ -15,6 +15,6 @@ class CocktailManager {
       this.alcoholic,
       this.glassType,
       this.pictureUrl,
-      this.ingredients,
-      this.instructions});
+      this.instructions,
+      this.ingredients});
 }

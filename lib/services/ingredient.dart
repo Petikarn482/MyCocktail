@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Ingredient {
-  String ingredient;
-  String measure;
+  Ingredient({@required this.name, @required this.mesure});
 
-  Ingredient({@required this.ingredient, @required this.measure});
+  String name;
+  String mesure;
 }

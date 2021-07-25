@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:my_cocktail/constants.dart';
 import 'package:my_cocktail/services/ingredient.dart';
 import 'package:my_cocktail/ui_components/ingredient_widget.dart';
-import 'package:my_cocktail/ui_components/instructions_widget.dart';
+import 'package:my_cocktail/ui_components/instruction_widget.dart';
 
 class ResultWindow extends StatelessWidget {
-  ResultWindow({
-    @required this.name,
-    @required this.alcoholic,
-    @required this.category,
-    @required this.glassType,
-    @required this.pictureUrl,
-    @required this.instructions,
-    @required this.ingredients,
-  });
-
   final String name;
   final String category;
   final String alcoholic;
   final String glassType;
   final String pictureUrl;
-  final List<Ingredient> ingredients;
   final String instructions;
+  final List<Ingredient> ingredients;
+
+  ResultWindow({
+    @required this.name,
+    @required this.category,
+    @required this.alcoholic,
+    @required this.glassType,
+    @required this.pictureUrl,
+    @required this.instructions,
+    @required this.ingredients,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +38,7 @@ class ResultWindow extends StatelessWidget {
                 style: kHeaderTextStyle,
               ),
             ),
+
             //Cocktail Details
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -56,6 +57,7 @@ class ResultWindow extends StatelessWidget {
                 ],
               ),
             ),
+
             //Cocktail Image
             Container(
               width: 200,
@@ -64,10 +66,10 @@ class ResultWindow extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: NetworkImage(pictureUrl),
-                  fit: BoxFit.fitHeight,
                 ),
               ),
             ),
+
             //Cocktail Ingredients
             Container(
               padding: EdgeInsets.all(20),
@@ -78,16 +80,18 @@ class ResultWindow extends StatelessWidget {
                 ingredientList: ingredients,
               ),
             ),
+
             //Cocktail Instructions
             Container(
               padding: EdgeInsets.all(20),
               margin: EdgeInsets.symmetric(horizontal: 20),
               height: 200,
               decoration: kBoxDecorationStyle,
-              child: InstructionsWidget(
-                instructionsEN: instructions,
+              child: InstructionWidget(
+                instructions: instructions,
               ),
             ),
+
             //Return Button
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -95,13 +99,13 @@ class ResultWindow extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Return'),
+                child: Text("Return"),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF3C4D74),
-                  minimumSize: Size(100, 55),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                ),
+                    primary: kComponentColor,
+                    minimumSize: kButtonMinSize,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )),
               ),
             ),
           ],

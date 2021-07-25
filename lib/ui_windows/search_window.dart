@@ -1,19 +1,18 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:my_cocktail/constants.dart';
 import 'package:my_cocktail/services/cocktail_manager.dart';
+import 'package:http/http.dart';
 import 'package:my_cocktail/services/ingredient.dart';
 import 'package:my_cocktail/ui_windows/result_window.dart';
-import 'package:http/http.dart';
 
 class SearchWindow extends StatefulWidget {
-  SearchWindow({Key key}) : super(key: key);
-
   @override
-  _SearchWindowState createState() => _SearchWindowState();
+  _SearchWindow createState() => _SearchWindow();
 }
 
-class _SearchWindowState extends State<SearchWindow> {
+class _SearchWindow extends State<SearchWindow> {
   String cocktailName;
 
   @override
@@ -25,50 +24,51 @@ class _SearchWindowState extends State<SearchWindow> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 100),
-              //Logo Text
+              SizedBox(height: 200),
+              // Logo Text
               Center(
                 child: Text(
-                  "My Cocktail",
-                  style: TextStyle(fontSize: 50),
+                  "Cocktails",
+                  style: TextStyle(fontSize: 70),
                 ),
               ),
 
-              SizedBox(height: 200),
-              //Search Input Field
+              SizedBox(height: 100),
+
+              // Text Input
               TextField(
-                decoration: InputDecoration(
-                  hintText: "Name a Cocktail?",
-                  contentPadding: EdgeInsets.all(20),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                    borderSide: kBorderSide,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                    borderSide: kBorderSide,
-                  ),
-                ),
                 onChanged: (value) {
                   cocktailName = value;
                 },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(20),
+                  hintText: "Name a Cocktail?",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: kBorderSide,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: kBorderSide,
+                  ),
+                ),
               ),
 
               SizedBox(height: 20),
-              //Search Button
+
+              // Search Button
               ElevatedButton(
                 onPressed: () async {
-                  CocktailManager cm = CocktailManager();
-
-                  if (cocktailName == null) {
-                    return;
-                  }
+                  if (cocktailName == null) return;
 
                   cocktailName.toLowerCase().replaceAll(' ', '_');
 
-                  var network = await get(Uri.parse(urlString + cocktailName));
+                  CocktailManager cm = CocktailManager();
+
+                  var network = await get(Uri.parse(kMainUrl + cocktailName));
 
                   var json = jsonDecode(network.body);
+
                   cm.name = json['drinks'][0]['strDrink'];
                   cm.alcoholic = json['drinks'][0]['strAlcoholic'];
                   cm.glassType = json['drinks'][0]['strGlass'];
@@ -76,57 +76,53 @@ class _SearchWindowState extends State<SearchWindow> {
                   cm.category = json['drinks'][0]['strCategory'];
                   cm.instructions = json['drinks'][0]['strInstructions'];
 
-                  String strIngredient, strMeasure;
-                  List<Ingredient> ingredientsList = [];
+                  String strIngredientName, strIngredientMeasure;
+                  List<Ingredient> ingrdientList = [];
 
-                  for (int i = 0; i < 15; i++) {
-                    strIngredient = 'strIngredient' + (i + 1).toString();
-                    strMeasure = 'strMeasure' + (i + 1).toString();
+                  for (int i = 1; i < 16; i++) {
+                    strIngredientName = 'strIngredient' + i.toString();
+                    strIngredientMeasure = 'strMeasure' + i.toString();
 
-                    ingredientsList.add(
+                    ingrdientList.add(
                       Ingredient(
-                          ingredient: json['drinks'][0][strIngredient],
-                          measure: json['drinks'][0][strMeasure]),
+                        name: json['drinks'][0][strIngredientName],
+                        mesure: json['drinks'][0][strIngredientMeasure],
+                      ),
                     );
                   }
 
-                  // Remove element from List if ingredient is empty
-                  ingredientsList.removeWhere((element) =>
-                      element.ingredient == null && element.measure == null);
+                  ingrdientList.removeWhere((element) =>
+                      element.name == null && element.mesure == null);
 
-                  // If ingredient is not empyt but measure
-                  // Replace null in measure to empty string
-                  ingredientsList.forEach((element) {
-                    if (element.measure == null) {
-                      element.measure = ' ';
+                  ingrdientList.forEach((element) {
+                    if (element.mesure == null) {
+                      element.mesure = ' ';
                     }
                   });
 
-                  cm.ingredients = ingredientsList;
+                  cm.ingredients = ingrdientList;
 
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ResultWindow(
+                    MaterialPageRoute(builder: (context) {
+                      return ResultWindow(
                           name: cm.name,
+                          category: cm.category,
                           alcoholic: cm.alcoholic,
                           glassType: cm.glassType,
                           pictureUrl: cm.pictureUrl,
-                          category: cm.category,
                           instructions: cm.instructions,
-                          ingredients: cm.ingredients,
-                        );
-                      },
-                    ),
+                          ingredients: cm.ingredients);
+                    }),
                   );
                 },
-                child: Text('Show my Cocktail'),
+                child: Text("Search"),
                 style: ElevatedButton.styleFrom(
                   primary: kComponentColor,
-                  minimumSize: kButtonMinSize,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  minimumSize: kButtonMinSize,
                 ),
               ),
 
@@ -137,9 +133,10 @@ class _SearchWindowState extends State<SearchWindow> {
                 onPressed: () async {
                   CocktailManager cm = CocktailManager();
 
-                  var network = await get(Uri.parse(urlStringRandom));
+                  var network = await get(Uri.parse(kRandomUrl));
 
                   var json = jsonDecode(network.body);
+
                   cm.name = json['drinks'][0]['strDrink'];
                   cm.alcoholic = json['drinks'][0]['strAlcoholic'];
                   cm.glassType = json['drinks'][0]['strGlass'];
@@ -147,57 +144,53 @@ class _SearchWindowState extends State<SearchWindow> {
                   cm.category = json['drinks'][0]['strCategory'];
                   cm.instructions = json['drinks'][0]['strInstructions'];
 
-                  String strIngredient, strMeasure;
-                  List<Ingredient> ingredientsList = [];
+                  String strIngredientName, strIngredientMeasure;
+                  List<Ingredient> ingrdientList = [];
 
-                  for (int i = 0; i < 15; i++) {
-                    strIngredient = 'strIngredient' + (i + 1).toString();
-                    strMeasure = 'strMeasure' + (i + 1).toString();
+                  for (int i = 1; i < 16; i++) {
+                    strIngredientName = 'strIngredient' + i.toString();
+                    strIngredientMeasure = 'strMeasure' + i.toString();
 
-                    ingredientsList.add(
+                    ingrdientList.add(
                       Ingredient(
-                          ingredient: json['drinks'][0][strIngredient],
-                          measure: json['drinks'][0][strMeasure]),
+                        name: json['drinks'][0][strIngredientName],
+                        mesure: json['drinks'][0][strIngredientMeasure],
+                      ),
                     );
                   }
 
-                  // Remove element from List if ingredient is empty
-                  ingredientsList.removeWhere((element) =>
-                      element.ingredient == null && element.measure == null);
+                  ingrdientList.removeWhere((element) =>
+                      element.name == null && element.mesure == null);
 
-                  // If ingredient is not empyt but measure
-                  // Replace null in measure to empty string
-                  ingredientsList.forEach((element) {
-                    if (element.measure == null) {
-                      element.measure = ' ';
+                  ingrdientList.forEach((element) {
+                    if (element.mesure == null) {
+                      element.mesure = ' ';
                     }
                   });
 
-                  cm.ingredients = ingredientsList;
+                  cm.ingredients = ingrdientList;
 
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ResultWindow(
+                    MaterialPageRoute(builder: (context) {
+                      return ResultWindow(
                           name: cm.name,
+                          category: cm.category,
                           alcoholic: cm.alcoholic,
                           glassType: cm.glassType,
                           pictureUrl: cm.pictureUrl,
-                          category: cm.category,
                           instructions: cm.instructions,
-                          ingredients: cm.ingredients,
-                        );
-                      },
-                    ),
+                          ingredients: cm.ingredients);
+                    }),
                   );
                 },
-                child: Text('Show Random Cocktail'),
+                child: Text("Random"),
                 style: ElevatedButton.styleFrom(
                   primary: kComponentColor,
-                  minimumSize: kButtonMinSize,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  minimumSize: kButtonMinSize,
                 ),
               ),
             ],
