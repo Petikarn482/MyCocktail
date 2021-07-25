@@ -1,6 +1,6 @@
 # My Cocktail
 
-A Flutter App that let's you look for Cocktails and their Ingredients 😉
+A Flutter App that let's you search for Cocktails and their Ingredients 😉
 
 ## Video
 
