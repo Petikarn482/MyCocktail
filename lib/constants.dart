@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 const kMainUrl = "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=";
 const kRandomUrl = "https://www.thecocktaildb.com/api/json/v1/1/random.php";
 
-const kBackgroundColor = Color(0xFF1F2129);
-const kComponentColor = Color(0xFF3C4D74);
-const kGroupBackgroundColor = Color(0xFF383D4D);
+const kBackgroundColor = Color(0xFF601E34);
+const kComponentColor = Color(0xFF0E060E);
+const kGroupBackgroundColor = Color(0xFF67383D);
 
 const kHeaderTextStyle = TextStyle(
   fontSize: 30,
@@ -13,13 +13,13 @@ const kHeaderTextStyle = TextStyle(
 );
 
 const kTableTextStyle = TextStyle(
-  fontSize: 20,
+  fontSize: 30,
   fontWeight: FontWeight.w500,
 );
 
 const kBorderSide = BorderSide(
   color: kComponentColor,
-  width: 5,
+  width: 20,
 );
 
 const kBoxDecorationStyle = BoxDecoration(

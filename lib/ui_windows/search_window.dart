@@ -70,10 +70,11 @@ class _SearchWindow extends State<SearchWindow> {
                   var json = jsonDecode(network.body);
 
                   cm.name = json['drinks'][0]['strDrink'];
+                  cm.category = json['drinks'][0]['strCategory'];
                   cm.alcoholic = json['drinks'][0]['strAlcoholic'];
                   cm.glassType = json['drinks'][0]['strGlass'];
                   cm.pictureUrl = json['drinks'][0]['strDrinkThumb'];
-                  cm.category = json['drinks'][0]['strCategory'];
+
                   cm.instructions = json['drinks'][0]['strInstructions'];
 
                   String strIngredientName, strIngredientMeasure;
